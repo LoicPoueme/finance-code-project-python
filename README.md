@@ -27,10 +27,3 @@ Key Features:
 
         Semi-deviation calculation for downside risk analysis.
 
-Pourquoi ce texte est meilleur :
-
-    Terminologie standard : J'ai remplacé "annualyse" par Annualized et "take it" par Data Ingestion.
-
-    Mise en valeur de la CVaR : J'ai précisé que tu utilises aussi le terme "Expected Shortfall", qui est le nom standard de la CVaR en finance.
-
-    Organisation : Utiliser des puces (*) rend ton projet beaucoup plus sérieux qu'un bloc de texte.
