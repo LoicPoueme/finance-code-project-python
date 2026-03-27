@@ -2,7 +2,7 @@
 """
 Created on Thu Jan 29 21:18:35 2026
 
-@author: USER
+@author: Loic POUEME
 """
 #Computation of drawdown
 #Nom:Nzedjan Poueme loic germain
@@ -161,3 +161,64 @@ def vaR_parametric(r,level=0.05,modify=True):
  
 
     return -(r.mean() + z*r.std(ddof=0))
+
+"""
+Created on Sun Mar  8 20:59:23 2026
+
+@author: loic POUEME
+"""
+
+#efficient frontier
+
+
+
+def portifolio_return(weights,returns) :
+    "this function take weights vector and annual return for some asset for entry and return global performance of the portifolio "
+    return weights.T @ returns
+def portifolio_volatility(weights,cov_matrix) :
+    "this function take weights vector and covariance matrix for some asset  in entry and return global volatility of the protifolio "
+    return np.sqrt (weights.T @ cov_matrix @ weights.T)
+
+def ef_plot_2points(n_point,er,cov,style=".-"):
+    """this function plot the efficient frontier for just 2 asset 
+    n=number of point for plotting
+    er=serie of just 02 asset with annualyse return
+    style= style of line that do you want for the plotting
+    """
+    if er.shape[0]!=2 or cov.shape[0]!=2:
+        print("this function it is for plotting efficient frontier just for 2 assets please give a annualyse return series and covariance matrix for just 02 assets")
+    else: 
+       rets=[portifolio_return(w,er) for w in np.linspace(0,1,n_point)]
+       vols=[portifolio_volatility(w,cov) for w in np.linspace(0,1,n_point)]
+       ef=pd.DataFrame({"return":rets,"volatility":vols})
+    return ef.plot.line (x="volatility",y="return",style="-.")
+
+def minimize_vol (anualyse_return_series,covariance_matrix,target_return):
+    """this function take in entry target return and give at the end the weigths vector that minimze the volatility for the same target return """
+    n_point =anualyse_return_series.shape[0]
+    initial_guess=np.repeat(1/n_point,n_point)
+    bounds =((0.0,1.0),)*n_point 
+    returns_is_target = { 'type': 'eq',
+                         'args': (anualyse_return_series,),
+                         'fun': lambda weights,anualyse_return_series :target_return-portifolio_return(weights,anualyse_return_series)}
+    weights_sum_is_one =  {'type': 'eq',
+                         'fun': lambda weights : weights.sum()-1}
+    from scipy.optimize import minimize
+    result=minimize (portifolio_volatility,initial_guess,args=(covariance_matrix,), method='SLSQP',
+                     options={'disp' : False },
+                     constraints =(returns_is_target, weights_sum_is_one),
+                     bounds= bounds)
+    return result.x
+        
+def optimal_weights_vector (anualyse_return_series,covriance_matrix,n):
+    """this function take the return annualyse vector covariance matrix and number of target return (n) that we need for the efficient frontier and return a matrix that contains all the weights vector for each target return"""
+    weights=[minimize_vol(anualyse_return_series,covriance_matrix,target_return) for target_return in np.linspace (anualyse_return_series.min(), anualyse_return_series.max(), n)]
+    return weights
+
+def ef_frontier_for_n_points(anualyse_return_series,covriance_matrix,n_points):
+    """ this function it is for plotting efficient frontier for n assets (more than 2)"""
+    weights=optimal_weights_vector(anualyse_return_series, covriance_matrix, n_points)
+    rets=[portifolio_return(w,anualyse_return_series) for w in weights]
+    vols=[portifolio_volatility(w,covriance_matrix) for w in weights]
+    ef=pd.DataFrame({"return":rets,"volatility":vols})
+    return ef.plot.line (x="volatility",y="return",style="-.")
