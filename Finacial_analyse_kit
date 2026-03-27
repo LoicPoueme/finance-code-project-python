@@ -13,12 +13,6 @@ import pandas as pd
 import numpy as np
 def données (me_m:pd.DataFrame()):
     "la foction attend un fichier csv(header=0, index_col=0, parse_dates=True, na_values=-99.9) et retourne le fichier mis dans standart exploitatable pour l'annalyse "
-   # print(me_m)
-    #colum=['Lo 10','Hi 10']
-    #rets=me_m[colum]
-   # print(rets)
-    #rets.columns= ['smallcaps','largecaps']
-   # print(rets)
     rets=me_m/100
     #rets.plot.line()
     #print(rets.index)
@@ -39,26 +33,26 @@ def données1 ():
     rets1.index=rets1.index.to_period("M")
     return rets1
 
-def anualyse_rets (r,n_period_per_year):
-    """this function compute the annualyse returne for a given return serie r at period n"""
+def annualize_rets (r,n_period_per_year):
+    """this function compute the annualyze return for a given return serie r at period n"""
     general_ren=(1+r).prod()
-    annualyse=general_ren**(n_period_per_year/r.shape[0]) 
+    annualyze=general_ren**(n_period_per_year/r.shape[0]) 
     return annualyse-1
-def anualyse_vol (r,n_period_per_year):
-    """this function compute the annualyse returne for a given return serie r at period n"""
+def annualyze_vol (r,n_period_per_year):
+    """this function compute the annualyze volatility for a given return serie r at period n"""
     vol=r.std(ddof=0)
     anual_vol=vol*(n_period_per_year)**0.5
     return anual_vol
 
 def sharpe_ratio(r, risk_free, n_period_year):
     """this function compute de sharpe ration for the r return series with free risk return risk_free for periode n """
-    #anualyse risk_free
+    #annualyse risk_free
     rf=((1+risk_free)**(1/n_period_year))  - 1
-    #return at tne n period
+    #return at the n period
     excess=r-rf
-    annual_ret=anualyse_rets(excess, n_period_year)
+    annual_ret=annualyze_rets(excess, n_period_year)
     #vality at the period n
-    volatilty=anualyse_vol(r,n_period_year)
+    volatilty=annualyze_vol(r,n_period_year)
     #excess_rets
     return annual_ret/volatilty
     
