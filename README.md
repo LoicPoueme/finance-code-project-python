@@ -1,4 +1,4 @@
-Financial Risk Analysis Toolkit (Python)
+Financial Risk Analysis and Portfolio Optimization Toolkit (Python)
 
 This repository contains a set of Python functions designed to process financial data and perform advanced risk analysis. The toolkit automates the workflow from data ingestion to the calculation of key risk metrics.
 Key Features:
@@ -24,6 +24,8 @@ Key Features:
         Implementation of Value at Risk (VaR) and Conditional Value at Risk (CVaR/Expected Shortfall).
 
         Supports three methodologies: Historical, Parametric (Gaussian), and Semi-Parametric (Cornish-Fisher).
-
+        
         Semi-deviation calculation for downside risk analysis.
+
+        Implementation of the efficient frontier plot for two or N assets, using a quadratic optimizer to find the minimum portfolio volatility for a given target return.
 
